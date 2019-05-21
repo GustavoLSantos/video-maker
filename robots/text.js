@@ -16,6 +16,7 @@ async function robot(content){
   sanitizeContent(content)
   breakContentIntoSentences(content)
   limitMaximumSentences(content)
+  await fetchKeywordsOfAllSentences(content)
 
   async function fetchContentFromWikipedia(content){
     const algorithmiaAutenticated = algorithmia(algorithmiaApiKey)
@@ -88,6 +89,12 @@ async function robot(content){
 
   function limitMaximumSentences(content){
     content.sentences = content.sentences.slice(0, content.maximumSentences)
+  }
+
+  async function fetchKeywordsOfAllSentences(content) {
+    for (const sentence of content.sentences){
+      sentence.keywords = await fetchWatsonAndReturnKeywords(sentence.text)
+    }
   }
 
 }
